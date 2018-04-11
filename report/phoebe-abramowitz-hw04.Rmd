@@ -1,0 +1,41 @@
+---
+title: "Homework 4"
+author: "Phoebe Abramowitz"
+date: "4/11/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+###Question 1.4
+```{r}
+source('../code/archive-functions.R')
+raw_data <- read_archive('stringr')
+clean_data <- clean_archive(raw_data)
+plot_archive(clean_data)
+
+write.csv(clean_data,file = "../data/stringr-archive.csv")
+```
+###Question 1.5
+```{r}
+raw_data2 <- read_archive('ggplot2')
+clean_data2 <- clean_archive(raw_data2)
+
+raw_data3 <- read_archive('XML')
+clean_data3 <- clean_archive(raw_data3)
+
+raw_data4 <- read_archive('knitr')
+clean_data4 <- clean_archive(raw_data4)
+
+raw_data5 <- read_archive('dplyr')
+clean_data5 <- clean_archive(raw_data5)
+
+write.csv(clean_data2,file = "../data/ggplot2-archive.csv")
+write.csv(clean_data3,file = "../data/XML-archive.csv")
+write.csv(clean_data4,file = "../data/knitr-archive.csv")
+write.csv(clean_data5,file = "../data/dplyr-archive.csv")
+
+```
+
+
