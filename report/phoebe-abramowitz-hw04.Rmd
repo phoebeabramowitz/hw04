@@ -10,11 +10,13 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 ###Question 1.4
 ```{r}
+library(dplyr)
+library(ggplot2)
+
 source('../code/archive-functions.R')
 raw_data <- read_archive('stringr')
 clean_data <- clean_archive(raw_data)
 plot_archive(clean_data)
-
 write.csv(clean_data,file = "../data/stringr-archive.csv")
 ```
 ###Question 1.5
@@ -32,10 +34,31 @@ raw_data5 <- read_archive('dplyr')
 clean_data5 <- clean_archive(raw_data5)
 
 write.csv(clean_data2,file = "../data/ggplot2-archive.csv")
-write.csv(clean_data3,file = "../data/XML-archive.csv")
+write.csv(clean_data3,file = "../data/xml-archive.csv")
 write.csv(clean_data4,file = "../data/knitr-archive.csv")
 write.csv(clean_data5,file = "../data/dplyr-archive.csv")
-
 ```
+
+```{r make graphs}
+#merge them all into one data frame
+comb_data <- bind_rows(clean_data,clean_data2,clean_data3,clean_data4,clean_data5)
+# ggplot(comb_data)+
+#   geom_step(data=filter(comb_data,name=="ggplot2"), 
+#             mapping=aes(x=date,y=size,color="blue"),group =1)+
+#   geom_point(data=filter(comb_data,name=="ggplot2"),
+#                          mapping=aes(x=date,y=size,color="blue"))+
+#   geom_step(data=filter(comb_data,name=="dplyr"), 
+#             mapping=aes(x=date,y=size,color="red"),group =1)+
+#   geom_point(data=filter(comb_data,name=="dplyr"),
+#                          mapping=aes(x=date,y=size,color="red"))+
+#   ylab("Size(Kilobytes)")
+
+ggplot(data=comb_data, aes(group=name,col=name))+
+  geom_step(data=comb_data,aes(x=date,y=size,group=1))+
+  ylab("Size(Kilobytes)")+
+  xlab("Date")
+             
+```
+
 
 
