@@ -12,6 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(dplyr)
 library(ggplot2)
+library(stringr)
 
 source('../code/archive-functions.R')
 raw_data <- read_archive('stringr')
@@ -40,25 +41,104 @@ write.csv(clean_data5,file = "../data/dplyr-archive.csv")
 ```
 
 ```{r make graphs}
-#merge them all into one data frame
-comb_data <- bind_rows(clean_data,clean_data2,clean_data3,clean_data4,clean_data5)
-# ggplot(comb_data)+
-#   geom_step(data=filter(comb_data,name=="ggplot2"), 
-#             mapping=aes(x=date,y=size,color="blue"),group =1)+
-#   geom_point(data=filter(comb_data,name=="ggplot2"),
-#                          mapping=aes(x=date,y=size,color="blue"))+
-#   geom_step(data=filter(comb_data,name=="dplyr"), 
-#             mapping=aes(x=date,y=size,color="red"),group =1)+
-#   geom_point(data=filter(comb_data,name=="dplyr"),
-#                          mapping=aes(x=date,y=size,color="red"))+
-#   ylab("Size(Kilobytes)")
 
-ggplot(data=comb_data, aes(group=name,col=name))+
-  geom_step(data=comb_data,aes(x=date,y=size,group=1))+
+comb_data <- bind_rows(clean_data2,clean_data3,clean_data4,clean_data5)
+
+ggplot(data=comb_data, aes(x=date,y=size,color=name))+
+  geom_step()+
   ylab("Size(Kilobytes)")+
-  xlab("Date")
-             
+  xlab("Date")+
+  theme_minimal()
+
+ggplot(data=comb_data,aes(x=date,y=size,color=name))+
+  facet_wrap(~name,scales="free")+
+  geom_step(aes(group=1))+
+  ylab("Size(Kilobytes)")+
+  xlab("Date")+
+  theme_minimal()
 ```
+##Question 3
+```{r}
+text_emotion <- read.csv(url('https://raw.githubusercontent.com/ucb-stat133/stat133-spring-2018/master/data/text-emotion.csv'))
+head(text_emotion)
+contents <- text_emotion$content
+```
+```{r}
+l <- length(contents)
+counts <- rep(0,l)
+for(i in 1:l){
+  counts[i] <- str_length(contents[i])
+}
+summary(counts)
+hist(counts,breaks=30)
+```
+##3.2 Number of mentions
+```{r}
+#count the number of @ mentions in the tweet contents
+#input of each tweet contents in a character string
+source('../code/regex-functions.R')
+#write mention_cntr function 
+#Could use split_chars and iterate with if statements
+#could use str_split and hit the after @ stuff\
+#account for capitals
+library(stringr)
+not_num<- function(x){
+  if(x=="1"|x=="2"|x=="3"|x=="4"|x=="5"|x=="6"|x=="7"|
+     x=="8"|x=="9"){
+    FALSE
+  }
+  else{
+    TRUE
+  }
+}
 
+#This could be shorter but idk the functions
+not_alpha <- function(x){
+  if(x=="a"|x=="b"|x=="c"|x=="d"|x=="e"|x=="f"|x=="g"|
+     x=="h"|x=="i"|x=="j"|x=="k"|x=="l"|x=="m"|x=="n"|
+     x=="o"|x=="p"|x=="q"|x=="r"|x=="s"|x=="t"|x=="u"|
+     x=="v"|x=="w"|x=="x"|x=="y"|x=="z"|
+     x=="A"|x=="B"|x=="C"|x=="D"|x=="E"|x=="F"|x=="G"|
+     x=="H"|x=="I"|x=="J"|x=="K"|x=="L"|x=="M"|x=="N"|
+     x=="O"|x=="P"|x=="Q"|x=="R"|x=="S"|x=="T"|x=="U"|
+     x=="V"|x=="W"|x=="X"|x=="Y"|x=="Z"){
+    FALSE
+  }
+  else{
+    TRUE
+  }
+}
 
+valid_chars <- function(string){
+  valid <- TRUE
+  for(i in 2:str_length(string)){
+    char_i <- str_sub(string,start=i,end=i)
+    if(not_alpha(char_i) & not_num(char_i) & char_i!="_" ){
+      valid <- FALSE
+    }
+  }
+  valid
+}
+
+mention_cntr <- function(tweet){
+  m_count <- 0
+  words <- strsplit(tweet," ")[[1]]
+  l <- length(words)
+  v <- rep(0,l)
+  for (i in 1:l){
+    if (str_sub(words[i],1,1)=="@"& str_length(words[i])<16&valid_chars(words[i])){
+      m_count <- m_count +1
+    }
+  }
+  m_count
+}
+
+contents[1]
+c <- length(contents)
+mentions <- rep(0,c)
+for(i in 1:c){
+  mentions[i] <- mention_cntr(as.character(contents[i]))
+}
+mentions
+```
 

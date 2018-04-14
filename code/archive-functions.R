@@ -43,10 +43,11 @@ clean_archive <- function(dat){
 plot_archive <- function(d){
   title <- d$name[1]
   ggplot()+
-    geom_step(data=d, mapping=aes(x=date,y=size),group =1)+
-    geom_point(data=d,mapping=aes(x=date,y=size))+
+    geom_step(data=d, mapping=aes(x=date,y=size,group =1))+
+    geom_point(data=d, mapping=aes(x=date,y=size))+
     ggtitle(paste0(title,":",' timeline of version sizes'))+
-    ylab("Size(Kilobytes)")
+    ylab("Size(Kilobytes)")+
+    theme_minimal()
 }
 plot_archive(clean_data)
 
