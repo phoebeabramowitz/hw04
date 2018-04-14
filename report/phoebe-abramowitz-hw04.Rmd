@@ -2,7 +2,7 @@
 title: "Homework 4"
 author: "Phoebe Abramowitz"
 date: "4/11/2018"
-output: html_document
+output: github_document
 ---
 
 ```{r setup, include=FALSE}
@@ -81,7 +81,6 @@ source('../code/regex-functions.R')
 #Could use split_chars and iterate with if statements
 #could use str_split and hit the after @ stuff\
 #account for capitals
-library(stringr)
 not_num<- function(x){
   if(x=="1"|x=="2"|x=="3"|x=="4"|x=="5"|x=="6"|x=="7"|
      x=="8"|x=="9"){
@@ -133,12 +132,19 @@ mention_cntr <- function(tweet){
   m_count
 }
 
-contents[1]
+
 c <- length(contents)
 mentions <- rep(0,c)
 for(i in 1:c){
   mentions[i] <- mention_cntr(as.character(contents[i]))
 }
-mentions
+head(mentions)
+m_tab <- table(mentions)
+m_tab
+
+ggplot(data=as.data.frame(mentions))+
+  geom_bar(aes(x=mentions))
+##Tweet with 10 mentions
+contents[mention_cntr(as.character(contents))==10]
 ```
 
