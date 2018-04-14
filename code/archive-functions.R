@@ -49,5 +49,5 @@ plot_archive <- function(d){
     ylab("Size(Kilobytes)")+
     theme_minimal()
 }
-plot_archive(clean_data)
+
 
